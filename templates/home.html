@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+main {
+    padding-bottom: 4rem; /* Or adjust based on navbar height */
+}
+
+    </style>
+</head>
+<body class="bg-sky-100 text-gray-800 overflow-hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:block fixed top-0 left-0 h-full w-64 bg-sky-500 text-white shadow-lg">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold mb-6">Swing</h1>
+            <nav class="space-y-4">
+                <a href="/" class="block py-2 px-4 rounded hover:bg-sky-600">Home</a>
+                <a href="{% url 'search' %}" class="block py-2 px-4 rounded hover:bg-sky-600">Search</a>
+                <a href="{% url 'upload_post' %}" class="block py-2 px-4 rounded hover:bg-sky-600">Create Post</a>
+                <a href="{% url 'notifications' %}" class="block py-2 px-4 rounded hover:bg-sky-600">Notifications</a>
+                <a href="{% url 'profile' username=user.username %}" class="block py-2 px-4 rounded hover:bg-sky-600">Profile</a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="bg-sky-500 text-white py-4 px-6 shadow-md md:ml-64">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Swing</h1>
+        </div>
+    </header>
+ 
+    <!-- Main Content -->
+    <main class="container mx-auto my-6 px-4 md:ml-40">
+        {% block content %}
+        <!-- Post Feed -->
+        <div class="discussions max-w-3xl mx-auto">
+            <h1 class="text-xl font-bold my-6">News Feed</h1>
+            {% for post in posts reversed %}
+            <div class="bg-white shadow-lg rounded-lg mb-8 max-w-3xl mx-auto">
+                <!-- Post Header -->
+                <div class="flex justify-between items-center px-6 py-4">
+                    <div class="flex items-center space-x-4">
+                        <img src="{{ post.user.profile.profileimg.url }}" class="w-12 h-12 rounded-full" alt="Profile">
+                        <span class="font-semibold text-lg">
+                            <a href="/profile/{{ post.user.username }}" class="hover:text-blue-500">{{ post.user.username }}</a>
+                        </span>
+                    </div>
+                    <button class="text-gray-500">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                </div>
+            
+                <!-- Post Image -->
+                <div>
+                    <img src="{{ post.image.url }}" alt="Post image" class="w-full md:w-80 md:h-80 rounded-lg object-cover mx-auto">
+                </div>
+                
+            
+                <!-- Post Description -->
+                <div class="py-4 px-6">
+                    <p class="text-gray-800">
+                        <strong>{{ post.user.username }}:</strong> {{post.caption}}
+                    </p>
+                </div>
+            
+                <!-- Like Button Section -->
+                <div class="like-btn flex items-center text-gray-500 hover:text-red-500 px-6 py-3">
+                    <a href="#" data-post-id="{{ post.id }}" class="like-action flex items-center space-x-3">
+                        <div class="p-2 rounded-full text-black">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="24" height="24">
+                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3">
+                        <div class="p-2 rounded-full text-black">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="24" height="24">
+                                <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="#" class="flex items-center space-x-3 flex-1 justify-end">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="24" height="24">
+                            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                        </svg>
+                    </a>
+                    <span class="like-count ml-2 text-gray-700">{{ post.no_of_likes }}</span>
+                </div>
+            
+                <!-- Like Count -->
+                <div class="text-gray-500 text-sm px-6">
+                    <div>
+                        {% if post.no_of_likes == 0 %}
+                            <p>No likes yet</p>
+                        {% elif post.no_of_likes == 1 %}
+                            <p>Liked by 1 person</p>
+                        {% else %}
+                            <p>Liked by {{ post.no_of_likes }} people</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <!-- Comment Section -->
+                <div class="px-6 py-4">
+                    <div class="flex items-center space-x-4">
+                        <img src="{{ post.user.profileimg.url }}" class="w-8 h-8 rounded-full" alt="Comment">
+                        <input type="text" placeholder="Write a comment..." class="flex-1 bg-gray-100 px-4 py-2 rounded-md text-sm">
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+            
+            
+
+ <!-- Suggested Users -->
+<div class="suggested-users-container bg-white p-4 rounded-lg shadow-md mt-6">
+    <h2 class="font-semibold text-xl mb-4">Suggested Users</h2>
+    {% for profile in suggestions_username_profile_list %}
+    <div class="suggested-user flex items-center justify-between mb-4 p-3 border-b">
+        <div class="flex items-center space-x-4">
+            <img src="{{ profile.profileimg.url }}" class="w-12 h-12 rounded-full" alt="User Profile Picture">
+            <p class="text-lg font-medium">{{ profile.user.username }}</p>
+        </div>
+        <button class="follow-btn bg-blue-500 text-white py-1 px-4 rounded-md text-sm hover:bg-blue-600">
+            Follow
+        </button>
+    </div>
+    {% endfor %}
+</div>
+
+            
+
+            <!-- Load More -->
+            <div class="flex justify-center">
+                <button class="bg-white font-semibold px-6 py-2 rounded-full shadow-md">Load more...</button>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+    <nav class="fixed bottom-0 left-0 right-0 bg-sky-500 text-white py-3 shadow-md md:hidden z-50">
+        <div class="flex justify-around">
+            <a href="" class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v10m4-10l2 2m0 0l7 7-7 7m4-6v6" />
+                </svg>
+                <span class="text-xs">Home</span>
+            </a>
+            <a href="{% url 'search' %}" class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l4 4 8-8M5 8l4 4 8-8" />
+                </svg>
+                <span class="text-xs">Search</span>
+            </a>
+            <a href="{% url 'upload_post' %}" class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-xs">Post</span>
+            </a>
+            <a href="/Notifications" class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-4.215C18.21 11.015 16.645 9 15 9H5.635L3 13h4.015a7 7 0 00-.63 3 7 7 0 0014 0" />
+                </svg>
+                <span class="text-xs">Notifications</span>
+            </a>
+            <a href="{% url 'profile' username=user.username %}" class="text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 017 13h10a4 4 0 11-.121 4.804M12 9c1.657 0 3-1.343 3-3S13.657 3 12 3 9 4.343 9 6s1.343 3 3 3z" />
+                </svg>
+                <span class="text-xs">Profile</span>
+            </a>
+        </div>
+    </nav>
+    
+    
+</body>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+    const likeButton = document.querySelector('.like-action');
+    
+    likeButton.addEventListener('click', (e) => {
+        e.preventDefault();  // Prevents the page from reloading
+
+        const postId = likeButton.getAttribute('data-post-id');
+        
+        // Example AJAX request using Fetch API (or you could use jQuery.ajax if using jQuery)
+        fetch(`/like-post?post_id=${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add authentication tokens if necessary
+            },
+            body: JSON.stringify({ post_id: postId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the like count dynamically after the request is successful
+                const likeCountElement = likeButton.closest('.like-btn').querySelector('.like-count');
+                likeCountElement.textContent = data.new_like_count;
+            } else {
+                // Handle failure (e.g., show a notification)
+                alert("An error occurred while liking the post.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+});
+
+
+
+</script>
+</html>

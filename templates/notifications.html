@@ -1,0 +1,60 @@
+{% extends "home.html" %}
+
+{% block content %}
+    <div class="container mx-20 px-4 py-8">
+        <h2 class="text-2xl font-bold mb-6">Notifications</h2>
+
+        <!-- Notifications list -->
+        <div class="space-y-4">
+            {% for notification in notifications %}
+                <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
+                    <div class="flex items-center">
+                        <!-- Notification Icon -->
+                        <div class="mr-3">
+                            {% if notification.type == 'follow' %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v10m4-10l2 2m0 0l7 7-7 7m4-6v6" />
+                                </svg>
+                            {% elif notification.type == 'like' %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-pink-500" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c-3.313 0-6-2.687-6-6V9a6 6 0 0112 0v6c0 3.313-2.687 6-6 6z" />
+                                </svg>
+                            {% elif notification.type == 'message' %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v12h16V4H4zm0 0L7 7m0 0l3 3m-3-3l-3 3m3-3l3 3" />
+                                </svg>
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-500" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m9-9H3" />
+                                </svg>
+                            {% endif %}
+                        </div>
+
+                        <!-- Notification Message -->
+                        <div>
+                            <p class="text-gray-700">
+                                <strong>{{ notification.user.username }}</strong> 
+                                {% if notification.type == 'follow' %}
+                                    started following you.
+                                {% elif notification.type == 'like' %}
+                                    liked your post.
+                                {% elif notification.type == 'message' %}
+                                    sent you a message.
+                                {% else %}
+                                    {{ notification.message }}
+                                {% endif %}
+                            </p>
+                            <span class="text-sm text-gray-500">{{ notification.created_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                    </div>
+                    <!-- Optional: mark as read button -->
+                    <button class="bg-gray-200 text-sm text-gray-700 px-4 py-2 rounded-md">Mark as Read</button>
+                </div>
+            {% empty %}
+                <div class="text-center text-gray-500">
+                    <p>No notifications yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

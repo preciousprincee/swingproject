@@ -1,0 +1,75 @@
+{% extends 'home.html' %}
+
+{% block content %}
+<div class="bg-gray-100 min-h-screen flex flex-col items-center">
+    <!-- Profile Container -->
+    <div class="max-w-4xl w-full mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
+
+        <!-- Profile Header -->
+       
+		<div class="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-8">
+            <!-- User Picture -->
+            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500">
+                <img src="{{ user_profile.profileimg.url }}" alt="User Picture" class="w-full h-full object-cover">
+            </div>
+
+            <!-- User Info -->
+            <div class="flex-1 text-center lg:text-left">
+                <h1 class="text-2xl md:py-12 font-semibold text-gray-800">{{ user_object.username }}</h1>
+                <p class="text-sm text-gray-600">{{ user_profile.bio }}</p>
+            </div>
+
+							 <!-- Check if the logged-in user is viewing their own profile -->
+							{% if request.user.username != user_object.username %}
+							<!-- Follow/Unfollow Button for other users -->
+							<div>
+								<form method="POST" action="{% url 'follow' username=user_object.username %}">
+									{% csrf_token %}
+									<button class="px-6 py-2 md:mt-12 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+										{{ button_text }}
+									</button>
+								</form>
+							</div>
+						{% else %}
+							<!-- Edit Profile Button for the user's own profile -->
+							<div class="flex justify-center md:justify-start md:ml-80 mt-10 md:mt-40 md:pt-12">
+								<a href="{% url 'settings' %}" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+									Edit Profile
+								</a>
+							</div>
+						{% endif %}
+
+
+        </div>
+	   
+
+        <!-- Stats Section -->
+        <div class="mt-8 flex justify-around lg:justify-between border-t pt-6">
+            <div class="text-center">
+                <h2 class="text-xl font-semibold text-gray-800">{{ user_post_length }}</h2>
+                <p class="text-sm text-gray-600">Posts</p>
+            </div>
+            <div class="text-center">
+                <h2 class="text-xl font-semibold text-gray-800">{{ user_followers }}</h2>
+                <p class="text-sm text-gray-600">Followers</p>
+            </div>
+            <div class="text-center">
+                <h2 class="text-xl font-semibold text-gray-800">{{ user_following }}</h2>
+                <p class="text-sm text-gray-600">Following</p>
+            </div>
+        </div>
+
+        <!-- User Posts Section -->
+        <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for post in user_posts %}
+                <div class="relative group">
+                    <img src="{{ post.image.url }}" alt="Post Image" class="w-full h-40 object-cover rounded-lg shadow-md">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <p class="text-white font-semibold">View Post</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

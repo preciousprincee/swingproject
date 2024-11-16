@@ -1,0 +1,16 @@
+<!-- messaging/message_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message Detail</title>
+</head>
+<body>
+    <h1>Conversation with {{ receiver.username }}</h1>
+    <ul>
+        {% for message in messages %}
+            <li>{{ message.sender }} ({{ message.timestamp|date:"F j, Y, g:i a" }}): {{ message.content }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'send_message' receiver_username=receiver.username %}">Send a message</a>
+</body>
+</html>
